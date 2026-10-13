@@ -1,6 +1,6 @@
 from src.data_loader import load_stock_data
 from src.strategy import calculate_moving_averages, generate_signals, generate_trades
-
+from src.backtest import run_backtest
 
 def main():
     ticker = "AAPL"
@@ -21,11 +21,32 @@ def main():
 
     data = generate_trades(data)
 
-    print(
-        data[data["Trade"] != 0][
-            ["Close", "SMA_short", "SMA_long", "Signal", "Trade"]
-        ].tail(30)
+    data = run_backtest(
+    data,
+    initial_capital=10000
     )
+
+    print(
+    data[
+        [
+            "Close",
+            "Signal",
+            "Position",
+            "Market Return",
+            "Strategy Return",
+            "Strategy Equity",
+            "Buy Hold Equity"
+        ]
+    ].tail(20)
+    )
+    final_strategy_value = data["Strategy Equity"].iloc[-1]
+    final_buy_hold_value = data["Buy Hold Equity"].iloc[-1]
+
+    print("\nBACKTEST RESULTS")
+
+    print(f"Initial capital: €{10000:,.2f}")
+    print(f"Strategy final value: €{final_strategy_value:,.2f}")
+    print(f"Buy & Hold final value: €{final_buy_hold_value:,.2f}")
 
 
 if __name__ == "__main__":
