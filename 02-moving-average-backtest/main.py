@@ -6,7 +6,8 @@ from src.metrics import (
     calculate_annualized_return,
     calculate_annualized_volatility,
     calculate_sharpe_ratio,
-    calculate_max_drawdown
+    calculate_max_drawdown,
+    calculate_trade_statistics
 )
 from src.visualization import (
     plot_equity_curves,
@@ -76,6 +77,8 @@ def main():
         data["Buy Hold Equity"]
     )
 
+    trade_stats = calculate_trade_statistics(data)
+
     print(
     data[
         [
@@ -106,6 +109,12 @@ def main():
     print(f"Annualized volatility: {buy_hold_volatility:.2%}")
     print(f"Sharpe ratio: {buy_hold_sharpe:.2f}")
     print(f"Max drawdown: {buy_hold_max_drawdown:.2%}")
+
+    print("\nTRADE STATISTICS")
+    print(f"Completed trades: {trade_stats['number_of_trades']}")
+    print(f"Winning trades: {trade_stats['winning_trades']}")
+    print(f"Losing trades: {trade_stats['losing_trades']}")
+    print(f"Win rate: {trade_stats['win_rate']:.2%}")
 
     print("\nBACKTEST RESULTS")
 

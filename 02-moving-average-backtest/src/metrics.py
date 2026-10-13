@@ -42,3 +42,55 @@ def calculate_max_drawdown(equity_curve):
     ) / running_max
 
     return drawdown.min()
+def calculate_trade_statistics(data):
+    trades = []
+
+    in_position = False
+    entry_price = None
+
+    for _, row in data.iterrows():
+
+        if row["Trade"] == 1 and not in_position:
+            entry_price = row["Close"]
+            in_position = True
+
+        elif row["Trade"] == -1 and in_position:
+            exit_price = row["Close"]
+
+            trade_return = (
+                exit_price / entry_price
+            ) - 1
+
+            trades.append(trade_return)
+
+            in_position = False
+            entry_price = None
+
+    number_of_trades = len(trades)
+
+    if number_of_trades == 0:
+        return {
+            "number_of_trades": 0,
+            "winning_trades": 0,
+            "losing_trades": 0,
+            "win_rate": 0
+        }
+
+    winning_trades = sum(
+        trade_return > 0
+        for trade_return in trades
+    )
+
+    losing_trades = sum(
+        trade_return <= 0
+        for trade_return in trades
+    )
+
+    win_rate = winning_trades / number_of_trades
+
+    return {
+        "number_of_trades": number_of_trades,
+        "winning_trades": winning_trades,
+        "losing_trades": losing_trades,
+        "win_rate": win_rate
+    }
