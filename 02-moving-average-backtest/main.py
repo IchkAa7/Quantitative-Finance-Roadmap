@@ -1,5 +1,5 @@
 from src.data_loader import load_stock_data
-from src.strategy import calculate_moving_averages
+from src.strategy import calculate_moving_averages, generate_signals, generate_trades
 
 
 def main():
@@ -17,10 +17,14 @@ def main():
         long_window=50
     )
 
+    data = generate_signals(data)
+
+    data = generate_trades(data)
+
     print(
-        data[
-            ["Close", "SMA_short", "SMA_long"]
-        ].head(60)
+        data[data["Trade"] != 0][
+            ["Close", "SMA_short", "SMA_long", "Signal", "Trade"]
+        ].tail(30)
     )
 
 
