@@ -116,6 +116,12 @@ def main():
     print(f"Losing trades: {trade_stats['losing_trades']}")
     print(f"Win rate: {trade_stats['win_rate']:.2%}")
 
+    print(f"Average win: {trade_stats['average_win']:.2%}")
+    print(f"Average loss: {trade_stats['average_loss']:.2%}")
+
+    print(f"Profit factor: {trade_stats['profit_factor']:.2f}")
+    print(f"Expectancy: {trade_stats['expectancy']:.2%}")
+
     print("\nBACKTEST RESULTS")
 
     print(f"Initial capital: €{10000:,.2f}")

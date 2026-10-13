@@ -57,9 +57,7 @@ def calculate_trade_statistics(data):
         elif row["Trade"] == -1 and in_position:
             exit_price = row["Close"]
 
-            trade_return = (
-                exit_price / entry_price
-            ) - 1
+            trade_return = (exit_price / entry_price) - 1
 
             trades.append(trade_return)
 
@@ -73,24 +71,61 @@ def calculate_trade_statistics(data):
             "number_of_trades": 0,
             "winning_trades": 0,
             "losing_trades": 0,
-            "win_rate": 0
+            "win_rate": 0,
+            "average_win": 0,
+            "average_loss": 0,
+            "profit_factor": 0,
+            "expectancy": 0
         }
 
-    winning_trades = sum(
-        trade_return > 0
-        for trade_return in trades
-    )
+    winning_returns = [
+        trade for trade in trades
+        if trade > 0
+    ]
 
-    losing_trades = sum(
-        trade_return <= 0
-        for trade_return in trades
-    )
+    losing_returns = [
+        trade for trade in trades
+        if trade <= 0
+    ]
+
+    winning_trades = len(winning_returns)
+    losing_trades = len(losing_returns)
 
     win_rate = winning_trades / number_of_trades
+
+    average_win = (
+        sum(winning_returns) / winning_trades
+        if winning_trades > 0
+        else 0
+    )
+
+    average_loss = (
+        sum(losing_returns) / losing_trades
+        if losing_trades > 0
+        else 0
+    )
+
+    gross_profit = sum(winning_returns)
+    gross_loss = abs(sum(losing_returns))
+
+    profit_factor = (
+        gross_profit / gross_loss
+        if gross_loss > 0
+        else float("inf")
+    )
+
+    expectancy = (
+        win_rate * average_win
+        + (1 - win_rate) * average_loss
+    )
 
     return {
         "number_of_trades": number_of_trades,
         "winning_trades": winning_trades,
         "losing_trades": losing_trades,
-        "win_rate": win_rate
+        "win_rate": win_rate,
+        "average_win": average_win,
+        "average_loss": average_loss,
+        "profit_factor": profit_factor,
+        "expectancy": expectancy
     }
