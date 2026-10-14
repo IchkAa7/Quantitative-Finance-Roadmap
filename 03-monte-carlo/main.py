@@ -3,7 +3,7 @@ from src.metrics import (
     calculate_daily_returns,
     estimate_parameters
 )
-
+from src.simulation import simulate_price_paths
 
 def main():
     ticker = "AAPL"
@@ -17,6 +17,19 @@ def main():
     data = calculate_daily_returns(data)
 
     mean_return, volatility = estimate_parameters(data)
+    last_price = data["Close"].iloc[-1]
+
+    price_paths = simulate_price_paths(
+        last_price=last_price,
+        mean_return=mean_return,
+        volatility=volatility,
+        days=252,
+        simulations=1000
+    )
+
+    print("\nSIMULATION")
+    print(f"Shape: {price_paths.shape}")
+    print(f"First simulated final price: ${price_paths[-1, 0]:.2f}")
 
     print("\nMONTE CARLO PARAMETERS")
     print(f"Mean daily return: {mean_return:.4%}")
